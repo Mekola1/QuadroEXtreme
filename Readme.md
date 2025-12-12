@@ -54,40 +54,6 @@ Backend:
 
 ----------------------------------------------------------------
 
-СТРУКТУРА ПРОЄКТУ
-
-quadxtreme-backend/
- ├── src/
- │   ├── app.js                Ініціалізація Express
- │   ├── server.js             Запуск сервера
- │   ├── config/
- │   │   └── database.js       Підключення до PostgreSQL
- │   ├── models/               Sequelize-моделі
- │   │   ├── user.js
- │   │   ├── tour.js
- │   │   ├── booking.js
- │   │   ├── message.js
- │   │   └── index.js
- │   ├── controllers/          Бізнес-логіка
- │   │   ├── authController.js
- │   │   ├── tourController.js
- │   │   ├── bookingController.js
- │   │   └── chatController.js
- │   ├── routes/               REST-маршрути
- │   │   ├── authRoutes.js
- │   │   ├── tourRoutes.js
- │   │   ├── bookingRoutes.js
- │   │   └── chatRoutes.js
- │   ├── middlewares/          Middleware
- │   │   ├── authMiddleware.js
- │   │   └── validationMiddleware.js
- │   └── utils/
- │       └── validationSchemas.js
- ├── .env
- ├── package.json
- └── README.md
-
-----------------------------------------------------------------
 
 БАЗА ДАНИХ
 
