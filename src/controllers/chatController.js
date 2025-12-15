@@ -43,7 +43,34 @@ async function getMessagesByBooking(req, res) {
   }
 }
 
+/**
+ * DELETE message
+ * Only sender can delete own message
+ */
+async function deleteMessage(req, res) {
+  try {
+    const { id } = req.params;
+
+    const message = await Message.findByPk(id);
+    if (!message) {
+      return res.status(404).json({ message: 'Message not found' });
+    }
+
+    if (message.from_user_id !== req.user.id) {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+
+    await message.destroy();
+    res.json({ message: 'Message deleted successfully' });
+  } catch (err) {
+    console.error('deleteMessage error:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
 module.exports = {
   sendMessage,
-  getMessagesByBooking
+  getMessagesByBooking,
+  deleteMessage
 };
+

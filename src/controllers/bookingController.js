@@ -9,7 +9,8 @@ async function createBooking(req, res) {
       return res.status(404).json({ message: 'Tour not found' });
     }
 
-    const total_price = Number(tour.price) * Number(participants_count || 1);
+    const total_price =
+      Number(tour.price) * Number(participants_count || 1);
 
     const booking = await Booking.create({
       user_id: req.user.id,
@@ -39,7 +40,52 @@ async function getMyBookings(req, res) {
   }
 }
 
+/**
+ * UPDATE booking status (cancel / confirm)
+ */
+async function updateBookingStatus(req, res) {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const booking = await Booking.findByPk(id);
+    if (!booking) {
+      return res.status(404).json({ message: 'Booking not found' });
+    }
+
+    booking.status = status;
+    await booking.save();
+
+    res.json(booking);
+  } catch (err) {
+    console.error('updateBookingStatus error:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+/**
+ * DELETE booking
+ */
+async function deleteBooking(req, res) {
+  try {
+    const { id } = req.params;
+
+    const deleted = await Booking.destroy({ where: { id } });
+    if (!deleted) {
+      return res.status(404).json({ message: 'Booking not found' });
+    }
+
+    res.json({ message: 'Booking deleted successfully' });
+  } catch (err) {
+    console.error('deleteBooking error:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
 module.exports = {
   createBooking,
-  getMyBookings
+  getMyBookings,
+  updateBookingStatus,
+  deleteBooking
 };
+

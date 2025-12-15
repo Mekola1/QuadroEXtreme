@@ -25,7 +25,16 @@ async function getTourById(req, res) {
 
 async function createTour(req, res) {
   try {
-    const { title, description, difficulty, duration_hours, price, location, gps_track_url } = req.body;
+    const {
+      title,
+      description,
+      difficulty,
+      duration_hours,
+      price,
+      location,
+      gps_track_url
+    } = req.body;
+
     const tour = await Tour.create({
       title,
       description,
@@ -35,6 +44,7 @@ async function createTour(req, res) {
       location,
       gps_track_url
     });
+
     res.status(201).json(tour);
   } catch (err) {
     console.error('createTour error:', err);
@@ -42,8 +52,50 @@ async function createTour(req, res) {
   }
 }
 
+/**
+ * UPDATE tour
+ */
+async function updateTour(req, res) {
+  try {
+    const { id } = req.params;
+
+    const tour = await Tour.findByPk(id);
+    if (!tour) {
+      return res.status(404).json({ message: 'Tour not found' });
+    }
+
+    await tour.update(req.body);
+    res.json(tour);
+  } catch (err) {
+    console.error('updateTour error:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+/**
+ * DELETE tour
+ */
+async function deleteTour(req, res) {
+  try {
+    const { id } = req.params;
+
+    const deleted = await Tour.destroy({ where: { id } });
+    if (!deleted) {
+      return res.status(404).json({ message: 'Tour not found' });
+    }
+
+    res.json({ message: 'Tour deleted successfully' });
+  } catch (err) {
+    console.error('deleteTour error:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
 module.exports = {
   getAllTours,
   getTourById,
-  createTour
+  createTour,
+  updateTour,
+  deleteTour
 };
+
