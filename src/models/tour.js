@@ -34,6 +34,10 @@ const Tour = sequelize.define('Tour', {
   gps_track_url: {
     type: DataTypes.STRING(500),
     allowNull: true
+  },
+  guide_id: {
+    type: DataTypes.UUID,
+    allowNull: true
   }
 }, {
   tableName: 'tours',
@@ -41,3 +45,4 @@ const Tour = sequelize.define('Tour', {
 });
 
 module.exports = Tour;
+

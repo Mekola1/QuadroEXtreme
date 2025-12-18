@@ -1,5 +1,8 @@
 const { Booking, Tour } = require('../models');
 
+/**
+ * CREATE booking
+ */
 async function createBooking(req, res) {
   try {
     const { tour_id, date, participants_count } = req.body;
@@ -17,7 +20,8 @@ async function createBooking(req, res) {
       tour_id,
       date,
       participants_count,
-      total_price
+      total_price,
+      status: 'pending'
     });
 
     res.status(201).json(booking);
@@ -27,12 +31,22 @@ async function createBooking(req, res) {
   }
 }
 
+/**
+ * GET my bookings
+ */
 async function getMyBookings(req, res) {
   try {
     const bookings = await Booking.findAll({
       where: { user_id: req.user.id },
-      include: [Tour]
+      include: [
+        {
+          model: Tour,
+          as: 'Tour' // 🔥 КЛЮЧОВИЙ ФІКС
+        }
+      ],
+      order: [['created_at', 'DESC']]
     });
+
     res.json(bookings);
   } catch (err) {
     console.error('getMyBookings error:', err);

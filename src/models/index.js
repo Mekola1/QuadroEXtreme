@@ -4,13 +4,18 @@ const Tour = require('./tour');
 const Booking = require('./booking');
 const Message = require('./message');
 
-// Relations
+// ===== BOOKINGS =====
 User.hasMany(Booking, { foreignKey: 'user_id' });
 Booking.belongsTo(User, { foreignKey: 'user_id' });
 
-Tour.hasMany(Booking, { foreignKey: 'tour_id' });
-Booking.belongsTo(Tour, { foreignKey: 'tour_id' });
+Tour.hasMany(Booking, { foreignKey: 'tour_id', as: 'bookings' });
+Booking.belongsTo(Tour, { foreignKey: 'tour_id', as: 'Tour' });
 
+// ===== GUIDE ↔ TOUR =====
+Tour.belongsTo(User, { foreignKey: 'guide_id', as: 'guide' });
+User.hasMany(Tour, { foreignKey: 'guide_id', as: 'guidedTours' });
+
+// ===== MESSAGES =====
 User.hasMany(Message, { foreignKey: 'from_user_id', as: 'sentMessages' });
 User.hasMany(Message, { foreignKey: 'to_user_id', as: 'receivedMessages' });
 
@@ -20,6 +25,7 @@ Message.belongsTo(User, { foreignKey: 'to_user_id', as: 'toUser' });
 Booking.hasMany(Message, { foreignKey: 'booking_id' });
 Message.belongsTo(Booking, { foreignKey: 'booking_id' });
 
+// ===== INIT =====
 async function initDb() {
   try {
     await sequelize.authenticate();
@@ -41,3 +47,4 @@ module.exports = {
   Booking,
   Message
 };
+
