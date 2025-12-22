@@ -12,12 +12,16 @@ const {
 const {
   createBooking,
   getMyBookings,
+  getGuideBookings,
   updateBookingStatus,
   deleteBooking
 } = require('../controllers/bookingController');
 
 /**
- * CREATE booking
+ * ================================
+ * CREATE BOOKING (USER)
+ * POST /api/bookings
+ * ================================
  */
 router.post(
   '/',
@@ -28,12 +32,34 @@ router.post(
 );
 
 /**
- * GET current user's bookings
+ * ================================
+ * GET MY BOOKINGS (USER)
+ * GET /api/bookings/me
+ * ================================
  */
-router.get('/me', authMiddleware, getMyBookings);
+router.get(
+  '/me',
+  authMiddleware,
+  getMyBookings
+);
 
 /**
- * UPDATE booking status (cancel / confirm)
+ * ================================
+ * GET BOOKINGS FOR GUIDE
+ * GET /api/bookings/guide
+ * ================================
+ */
+router.get(
+  '/guide',
+  authMiddleware,
+  getGuideBookings
+);
+
+/**
+ * ================================
+ * UPDATE BOOKING STATUS
+ * PUT /api/bookings/:id/status
+ * ================================
  */
 router.put(
   '/:id/status',
@@ -44,9 +70,16 @@ router.put(
 );
 
 /**
- * DELETE booking
+ * ================================
+ * DELETE BOOKING
+ * DELETE /api/bookings/:id
+ * ================================
  */
-router.delete('/:id', authMiddleware, deleteBooking);
+router.delete(
+  '/:id',
+  authMiddleware,
+  deleteBooking
+);
 
 module.exports = router;
 

@@ -1,7 +1,7 @@
-const { Booking, Tour } = require('../models');
+const { Booking, Tour, User } = require('../models');
 
 /**
- * CREATE booking
+ * CREATE booking (user)
  */
 async function createBooking(req, res) {
   try {
@@ -32,7 +32,7 @@ async function createBooking(req, res) {
 }
 
 /**
- * GET my bookings
+ * GET my bookings (user)
  */
 async function getMyBookings(req, res) {
   try {
@@ -41,7 +41,7 @@ async function getMyBookings(req, res) {
       include: [
         {
           model: Tour,
-          as: 'Tour' // 🔥 КЛЮЧОВИЙ ФІКС
+          as: 'Tour'
         }
       ],
       order: [['created_at', 'DESC']]
@@ -55,7 +55,48 @@ async function getMyBookings(req, res) {
 }
 
 /**
- * UPDATE booking status (cancel / confirm)
+ * GET bookings for guide
+ */
+/**
+ * GET bookings for guide
+ */
+
+/**
+ * GET bookings for guide
+ */
+async function getGuideBookings(req, res) {
+  try {
+    if (req.user.role !== 'guide') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+
+    const bookings = await Booking.findAll({
+      include: [
+        {
+          model: Tour,
+          as: 'Tour',
+          required: true,
+          where: {
+            guide_id: req.user.id
+          }
+        },
+        {
+          model: User,
+          as: 'User', // 👈 ДОДАЙТЕ ЦЕЙ РЯДОК
+          attributes: ['id', 'email', 'full_name']
+        }
+      ],
+      order: [['created_at', 'DESC']]
+    });
+
+    res.json(bookings);
+  } catch (err) {
+    console.error('getGuideBookings error:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+/**
+ * UPDATE booking status
  */
 async function updateBookingStatus(req, res) {
   try {
@@ -99,6 +140,7 @@ async function deleteBooking(req, res) {
 module.exports = {
   createBooking,
   getMyBookings,
+  getGuideBookings,   // 🔥 ВАЖЛИВО
   updateBookingStatus,
   deleteBooking
 };

@@ -44,5 +44,18 @@ const Tour = sequelize.define('Tour', {
   underscored: true
 });
 
-module.exports = Tour;
+// Додаємо асоціації
+Tour.associate = (models) => {
+  // Тур належить гіду (User)
+  Tour.belongsTo(models.User, {
+    foreignKey: 'guide_id',
+    as: 'Guide'
+  });
+  // Один тур може мати багато бронювань
+  Tour.hasMany(models.Booking, {
+    foreignKey: 'tour_id',
+    as: 'Bookings'
+  });
+};
 
+module.exports = Tour;
